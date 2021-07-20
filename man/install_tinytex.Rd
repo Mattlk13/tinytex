@@ -10,15 +10,17 @@
 install_tinytex(
   force = FALSE,
   dir = "auto",
+  version = "daily",
   repository = "ctan",
-  extra_packages = NULL
+  extra_packages = if (is_tinytex()) tl_pkgs(),
+  add_path = TRUE
 )
 
 uninstall_tinytex(force = FALSE, dir = tinytex_root())
 
 reinstall_tinytex(packages = TRUE, dir = tinytex_root(), ...)
 
-tinytex_root()
+tinytex_root(error = TRUE)
 }
 \arguments{
 \item{force}{Whether to force to install (override) or uninstall TinyTeX.}
@@ -26,31 +28,42 @@ tinytex_root()
 \item{dir}{The directory to install or uninstall TinyTeX (should not exist
 unless \code{force = TRUE}).}
 
-\item{repository}{The CTAN repository to be used. By default, a fast mirror
-is automatically chosen. You can manually set one if the automatic mirror
-is not really fast enough, e.g., if you are in China, you may consider
-\code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or if you are in the
-midwest in the US, you may use
-\code{'https://mirror.las.iastate.edu/tex-archive/'}. You can find the full
-list of mirrors at \url{https://ctan.org/mirrors}.}
+\item{version}{The version of TinyTeX, e.g., \code{"2020.09"} (see all
+available versions at \url{https://github.com/yihui/tinytex-releases}, or
+the last few releases via
+\code{xfun::github_releases('yihui/tinytex-releases')}). By default, it
+installs the latest daily build of TinyTeX. If \code{version = 'latest'},
+it installs the latest Github release of TinyTeX.}
+
+\item{repository}{The CTAN repository to set. You can find available
+repositories at \code{https://ctan.org/mirrors}), e.g.,
+\code{'http://mirrors.tuna.tsinghua.edu.cn/CTAN/'}, or
+\code{'https://mirror.las.iastate.edu/tex-archive/'}. In theory, this
+argument should end with the path \file{/systems/texlive/tlnet}, and if it
+does not, the path will be automatically appended.}
 
 \item{extra_packages}{A character vector of extra LaTeX packages to be
-installed.}
+installed. By default, a vector of all currently installed LaTeX packages
+if an existing installation of TinyTeX is found. If you want a fresh
+installation, you may use \code{extra_packages = NULL}.}
+
+\item{add_path}{Whether to run the command \command{tlmgr path add} to add
+the bin path of TeX Live to the system environment variable \var{PATH}.}
 
 \item{packages}{Whether to reinstall all currently installed packages.}
 
 \item{...}{Other arguments to be passed to \code{install_tinytex()} (note
 that the \code{extra_packages} argument will be set to \code{tl_pkgs()} if
 \code{packages = TRUE}).}
+
+\item{error}{Whether to signal an error if TinyTeX is not found.}
 }
 \description{
-The function \code{install_tinytex()} downloads the installation script from
-\url{https://github.com/yihui/tinytex} according to the platform (Unix or
-Windows), and executes it to install TinyTeX (a custom LaTeX distribution
-based on TeX Live). The function \code{uninstall_tinytex()} removes TinyTeX;
-\code{reinstall_tinytex()} reinstalls TinyTeX as well as previously installed
-LaTeX packages by default; \code{tinytex_root()} returns the root directory
-of TinyTeX.
+The function \code{install_tinytex()} downloads and installs TinyTeX, a
+custom LaTeX distribution based on TeX Live. The function
+\code{uninstall_tinytex()} removes TinyTeX; \code{reinstall_tinytex()}
+reinstalls TinyTeX as well as previously installed LaTeX packages by default;
+\code{tinytex_root()} returns the root directory of TinyTeX if found.
 }
 \references{
 See the TinyTeX documentation (\url{https://yihui.org/tinytex/})
